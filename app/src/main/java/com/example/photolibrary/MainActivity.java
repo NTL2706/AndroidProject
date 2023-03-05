@@ -1,10 +1,11 @@
 package com.example.photolibrary;
 
+import android.Manifest;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.core.content.PackageManagerCompat;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.pm.PackageManager;
@@ -31,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.recyclerview_gallery_images);
 
         // check from permission
+
         if(ContextCompat.checkSelfPermission(MainActivity.this,
                 Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
 
@@ -45,6 +47,21 @@ public class MainActivity extends AppCompatActivity {
 
     private void loadImages(){
 
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new GridLayoutManager(this, 3));
+        images  = ImagesGallery.listOfImages(this);
+
+        galleryAdapter = new GalleryAdapter(this, images, new GalleryAdapter.PhotoListener() {
+            @Override
+            public void onPhotoClick(String path) {
+                //DO something with photo
+               Toast.makeText(MainActivity.this, "" +path, Toast.LENGTH_SHORT) .show();
+            }
+        });
+
+        recyclerView.setAdapter(galleryAdapter);
+
+        gallery_number.setText("Photos (" + images.size()+")");
     }
 
     @Override

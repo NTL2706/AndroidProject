@@ -26,7 +26,9 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
 }
+
 
 dependencies {
 
@@ -38,6 +40,9 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 
     //import library
-    implementation "com.github.bumptech.glide:glide:4.8.0"              // dowload and show img
-    implementation "androidx.recyclerview:recyclerview:1.2.1"           // library in Android to display a list of items as a list (List), grid (Grid) or complex grid (Staggered Grid)
+    implementation 'com.github.bumptech.glide:glide:4.15.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.15.0'         // dowload and show img
+    implementation "androidx.recyclerview:recyclerview:1.2.1"
+    // library in Android to display a list of items as a list (List), grid (Grid) or complex grid (Staggered Grid)
+    implementation "androidx.recyclerview:recyclerview-selection:1.1.0"
 }

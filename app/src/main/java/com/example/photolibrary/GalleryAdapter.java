@@ -34,6 +34,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+//        System.out.println(position);
         String image = images.get(position);
 
         Glide.with(context).load(image).into(holder.image);
