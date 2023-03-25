@@ -1,81 +1,92 @@
 package com.example.photolibrary;
 
-import android.Manifest;
+import android.os.Bundle;
+import android.view.MenuItem;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager2.widget.ViewPager2;
 
-import android.content.pm.PackageManager;
-import android.os.Bundle;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import java.util.List;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationBarView;
 
 public class MainActivity extends AppCompatActivity {
-    RecyclerView recyclerView;
-    GalleryAdapter galleryAdapter;
-    List<String> images;
-    TextView gallery_number;
-
-    private static final int MY_READ_PERMISSION_CODE = 101;
+    BottomNavigationView bottomNavigationView;
+    ViewPager2 viewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        gallery_number = findViewById(R.id.gallery_number);
-        recyclerView = findViewById(R.id.recyclerview_gallery_images);
+        viewPager = findViewById(R.id.view_pager);
+        bottomNavigationView = findViewById(R.id.bottom_nav);
 
-        // check from permission
+        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager(), getLifecycle());
+        viewPager.setAdapter(adapter);
 
-        if(ContextCompat.checkSelfPermission(MainActivity.this,
-                Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
-
-            ActivityCompat.requestPermissions(MainActivity.this,
-                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, MY_READ_PERMISSION_CODE);
-        }
-        else{
-            loadImages();
-        }
-
-    }
-
-    private void loadImages(){
-
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new GridLayoutManager(this, 3));
-        images  = ImagesGallery.listOfImages(this);
-
-        galleryAdapter = new GalleryAdapter(this, images, new GalleryAdapter.PhotoListener() {
+        viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
-            public void onPhotoClick(String path) {
-                //DO something with photo
-               Toast.makeText(MainActivity.this, "" +path, Toast.LENGTH_SHORT) .show();
+            public void onPageScrollStateChanged(int state) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+
+                switch (position){
+                    case 0:
+                        bottomNavigationView.getMenu().findItem(R.id.photo).setChecked(true);
+                        break;
+                    case 1:
+
+                        bottomNavigationView.getMenu().findItem(R.id.album).setChecked(true);
+                        break;
+                    case 2:
+
+                        bottomNavigationView.getMenu().findItem(R.id.favorite).setChecked(true);
+                        break;
+                    case 3:
+
+                        bottomNavigationView.getMenu().findItem(R.id.scret).setChecked(true);
+                        break;
+                }
             }
         });
 
-        recyclerView.setAdapter(galleryAdapter);
+        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
-        gallery_number.setText("Photos (" + images.size()+")");
+                switch (item.getItemId()) {
+                    case R.id.photo:
+
+                        viewPager.setCurrentItem(0);
+                        break;
+
+                    case R.id.album:
+
+                        viewPager.setCurrentItem(1);
+                        break;
+
+                    case R.id.favorite:
+
+                        viewPager.setCurrentItem(2);
+                        break;
+
+                    case R.id.scret:
+
+                        viewPager.setCurrentItem(3);
+                        break;
+
+                }
+                return true;
+            }
+        });
+
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
-        if(requestCode == MY_READ_PERMISSION_CODE){
-            if(grantResults[0] == PackageManager.PERMISSION_GRANTED){
-                Toast.makeText(this, "Read external stoge permission grated", Toast.LENGTH_SHORT).show();
-                loadImages();
-            }
-            else{
-                Toast.makeText(this,"Read external storage permission denied", Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
+
+
 }

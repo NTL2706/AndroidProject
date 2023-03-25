@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/photo"
+        android:title="Photo"
+        android:icon="@drawable/ic_picture"
+        android:iconTint="?attr/colorOnBackground"/>
+
+    <item android:id="@+id/album"
+        android:title="Album"
+        android:icon="@drawable/ic_gallery"
+        android:iconTint="?attr/colorOnBackground"/>
+
+    <item
+        android:id="@+id/favorite"
+        android:icon="@drawable/ic_star"
+        android:iconTint="?attr/colorOnBackground"
+        android:title="Favorite" />
+
+    <item android:id="@+id/scret"
+        android:title="Secret"
+        android:icon="@drawable/ic_secret"
+        android:iconTint="?attr/colorOnBackground" />
+
+
+</menu>
