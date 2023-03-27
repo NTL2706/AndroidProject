@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
+    <item
+        android:id="@+id/menuCamera"
+        android:icon="@drawable/baseline_camera_24"
+        android:title="@string/camera"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/search_image"
+        android:icon="@drawable/baseline_search_24"
+        android:title="@string/search"
+        app:showAsAction="ifRoom|collapseActionView" />
+
+    <item
+        android:id="@+id/menuChoose"
+        android:title="@string/multi_select"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/menuSearch_Advanced"
+        android:title="@string/search_advance"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/menuSettings"
+        android:title="@string/settings"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/duplicateImages"
+        android:title="@string/duplicate_images"
+        app:showAsAction="never" />
+</menu>
