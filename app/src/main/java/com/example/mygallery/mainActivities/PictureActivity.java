@@ -54,11 +54,10 @@ public class PictureActivity extends AppCompatActivity  implements  PictureInter
     private Bitmap imageBitmap;
     private String title, link, displayedLink, snippet;
     private RecyclerView resultsRV;
-//    private SearchRVAdapter searchRVAdapter;
-    //private ArrayList<SearchRV> searchRVArrayList;
+
     private BottomSheetDialog bottomSheetDialog;
     private RecyclerView ryc_album;
-    public static Set<String> imageListFavor = DataLocalManager.getListSet();
+    public static Set<String> imageListFavor ;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,11 +71,13 @@ public class PictureActivity extends AppCompatActivity  implements  PictureInter
     @Override
     protected void onResume() {
         super.onResume();
+        imageListFavor = DataLocalManager.getListSet();
     }
 
 
     private void events() {
         setDataIntent();
+        setUpToolBar();
         setUpSilder();
         bottomNavigationViewEvents();
     }
@@ -127,16 +128,20 @@ public class PictureActivity extends AppCompatActivity  implements  PictureInter
 
                         }
                     case R.id.starPic:
+                        System.out.println("THôi mà đừng có như vậy nữa");
                         if(!imageListFavor.add(imgPath)){
                             imageListFavor.remove(imgPath);
                         }
 
                         DataLocalManager.setListImg(imageListFavor);
                         Toast.makeText(PictureActivity.this, imageListFavor.size()+"", Toast.LENGTH_SHORT).show();
+
                         if(!check(imgPath)){
+
                             bottomNavigationView.getMenu().getItem(2).setIcon(R.drawable.ic_star);
                         }
                         else{
+
                             bottomNavigationView.getMenu().getItem(2).setIcon(R.drawable.ic_star_red);
 
                         }
@@ -187,6 +192,7 @@ public class PictureActivity extends AppCompatActivity  implements  PictureInter
     public void setTitleToolbar(String imageName) {
         this.imageName = imageName;
         toolbar_picture.setTitle(imageName);
+
     }
 
     public Boolean check(String  Path){
@@ -211,6 +217,7 @@ public class PictureActivity extends AppCompatActivity  implements  PictureInter
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
                 thumb = imageListThumb.get(position);
                 imgPath = imageListPath.get(position);
+
                 setTitleToolbar(thumb.substring(thumb.lastIndexOf("/") + 1));
                 if (!check(imgPath)){
                     bottomNavigationView.getMenu().getItem(2).setIcon(R.drawable.ic_star);
@@ -233,10 +240,26 @@ public class PictureActivity extends AppCompatActivity  implements  PictureInter
 
     }
 
+    private void setUpToolBar() {
+        // Toolbar events
+        toolbar_picture.inflateMenu(R.menu.menu_of_top);
+        setTitleToolbar("Hello");
+
+        // Show back button
+        toolbar_picture.setNavigationIcon(R.drawable.baseline_arrow_back_24);
+        toolbar_picture.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                finish();
+            }
+        });
+    }
     private void setDataIntent() {
         intent = getIntent();
         imageListPath = intent.getStringArrayListExtra("data_list_path");
         imageListThumb = intent.getStringArrayListExtra("data_list_thumb");
+
         pos = intent.getIntExtra("pos", 0);
         activityPicture = this;
     }

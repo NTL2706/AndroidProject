@@ -10,4 +10,8 @@
     <string name="edit_photo">Edit photo</string>
     <string name="add_to_favorite">Favorite Picture</string>
     <string name="delete">Delete</string>
+    <string name="photo">Photo</string>
+    <string name="album">Album</string>
+    <string name="secret">Secret</string>
+    <string name="favorite">Delete</string>
 </resources>

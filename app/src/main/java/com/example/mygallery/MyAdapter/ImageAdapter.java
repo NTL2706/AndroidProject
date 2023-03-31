@@ -1,6 +1,8 @@
 package com.example.mygallery.MyAdapter;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,15 +13,21 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.mygallery.R;
+import com.example.mygallery.mainActivities.PictureActivity;
 import com.example.mygallery.models.Category;
 import com.example.mygallery.models.Image;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHolder>{
     private Context context;
     private List<Image> listImages;
     private List<Category> listCategory;
+
+    private Intent intent;
+    private ArrayList<String> listPath ;
+    private ArrayList<String> listThumb ;
     public ImageAdapter(Context context){
         this.context = context;
     }
@@ -49,7 +57,10 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
         holder.imgPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                intent = new Intent(context, PictureActivity.class);
+                MyAsyncTask myAsyncTask =new MyAsyncTask();
+                myAsyncTask.setPos(position);
+                myAsyncTask.execute();
             }
         });
     }
@@ -69,6 +80,38 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
         public ImageViewHolder(@NonNull View itemView) {
             super(itemView);
             imgPhoto= itemView.findViewById(R.id.Photo);
+        }
+    }
+
+    public class MyAsyncTask extends AsyncTask<Void, Integer, Void> {
+        public int pos;
+
+        public void setPos(int pos) {
+            this.pos = pos;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            listPath = new ArrayList<>();
+            listThumb = new ArrayList<>();
+            for(int i = 0;i<listCategory.size();i++) {
+                List<Image> listGirl = listCategory.get(i).getListGirl();
+                for (int j = 0; j < listGirl.size(); j++) {
+                    listPath.add(listGirl.get(j).getPath());
+                    listThumb.add(listGirl.get(j).getThumb());
+                }
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void unused) {
+            super.onPostExecute(unused);
+            intent.putStringArrayListExtra("data_list_path", listPath);
+            intent.putStringArrayListExtra("data_list_thumb", listThumb);
+            intent.putExtra("pos", listPath.indexOf(listImages.get(pos).getPath()));
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(intent);
         }
     }
 }

@@ -5,6 +5,7 @@
     android:gravity="center">
 
     <com.github.chrisbanes.photoview.PhotoView
+        style="@style/myPhotoView"
         android:id="@+id/imgPicture"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

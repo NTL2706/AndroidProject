@@ -7,6 +7,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <application
+
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -22,6 +23,7 @@
         <activity
             android:name=".mainActivities.MainActivity"
             android:exported="true"
+
             >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -35,7 +37,7 @@
 
             android:screenOrientation="portrait"
 
-            android:theme="@android:style/Theme.Holo.NoActionBar" />
+            android:theme="@android:style/Theme.Material.NoActionBar.Fullscreen" />
 
         <activity
 
@@ -43,7 +45,7 @@
 
             android:screenOrientation="portrait"
 
-            android:theme="@android:style/Theme.Holo.NoActionBar" />
+            android:theme="@android:style/Theme.Material.NoActionBar.Fullscreen" />
 
         <activity
 
@@ -51,7 +53,7 @@
 
             android:screenOrientation="portrait"
 
-            android:theme="@android:style/Theme.Holo.NoActionBar"
+            android:theme="@android:style/Theme.Material.NoActionBar"
 
             android:windowSoftInputMode="adjustPan" />
 
@@ -61,7 +63,7 @@
 
             android:screenOrientation="portrait"
 
-            android:theme="@android:style/Theme.Holo.NoActionBar" />
+            android:theme="@android:style/Theme.Material.NoActionBar.Fullscreen" />
 
         <activity
 
@@ -69,7 +71,7 @@
 
             android:screenOrientation="portrait"
 
-            android:theme="@android:style/Theme.Holo.NoActionBar" />
+            android:theme="@android:style/Theme.Material.NoActionBar.Fullscreen" />
     </application>
 
 </manifest>

@@ -15,7 +15,10 @@
     <FrameLayout
         android:id="@+id/frame_viewPager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_below="@+id/toolbar_picture"
+        android:layout_above="@+id/bottom_picture"
+        >
         <androidx.viewpager.widget.ViewPager
             android:id="@+id/viewPager_picture"
             android:layout_width="match_parent"
@@ -33,5 +36,6 @@
         app:labelVisibilityMode="unlabeled"
         android:background="?attr/colorOnPrimary"
         app:menu="@menu/menu_bottom_picture"
+
         />
 </RelativeLayout>
