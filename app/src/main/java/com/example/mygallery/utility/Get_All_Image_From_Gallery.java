@@ -21,7 +21,19 @@ public class Get_All_Image_From_Gallery {
     private static boolean addNewestImagesOnly = false;
 
     public static List<Image> getAllImages() {
+
         return allImages;
+    }
+
+    public static void removeImageFromAllImages(String path) {  // remove deleted photo from "database"
+        Log.d("Simple-Gallery","GetAllPhotosFromGallery -> Trying to remove "+path);
+        for(int i=0;i<allImages.size();i++) {
+            if(allImages.get(i).getPath().equals(path)) {
+                Log.d("Simple-Gallery","GetAllPhotosFromGallery -> Image removed from allImages. Breaking");
+                allImages.remove(i);
+                break;
+            }
+        }
     }
     public static final List<Image> getAllImageFromGallery(Context context) {
         Log.d("Simple-Gallery","GetAllPhotoFromGallery->getAllImageFromGallery()");

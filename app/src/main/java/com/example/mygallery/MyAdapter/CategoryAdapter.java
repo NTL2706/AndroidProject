@@ -49,7 +49,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
         ImageAdapter imageAdapter = new ImageAdapter(context.getApplicationContext());
         imageAdapter.setData(category.getListGirl());
         imageAdapter.setListCategory(listCategory);
-        holder.RecycleViewPictures.setAdapter(imageAdapter);
+        holder.RecycleViewPictures.setAdapter(imageAdapter );
 
     }
 
