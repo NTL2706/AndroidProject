@@ -18,6 +18,7 @@ import com.example.mygallery.R;
 public class MainActivity extends AppCompatActivity {
     private static final int MY_READ_PERMISSION_CODE = 101;
     private photo_fragment photoFragment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

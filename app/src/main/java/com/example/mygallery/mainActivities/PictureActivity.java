@@ -179,7 +179,7 @@ public class PictureActivity extends AppCompatActivity  implements  PictureInter
 
                         break;
                 }
-                return false;
+                return true;
             }
         });
     }
