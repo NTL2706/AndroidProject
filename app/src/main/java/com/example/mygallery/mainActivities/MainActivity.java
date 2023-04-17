@@ -9,8 +9,11 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.Manifest;
+import android.app.Activity;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.MenuItem;
 import android.widget.Toast;
 
@@ -20,13 +23,17 @@ import com.example.mygallery.R;
 import com.example.mygallery.mainActivities.data_favor.DataLocalManager;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
+import com.karan.churi.PermissionManager.PermissionManager;
+
+import java.util.List;
+
 
 public class MainActivity extends AppCompatActivity {
     private static final int MY_READ_PERMISSION_CODE = 101;
     private photo_fragment photoFragment;
     BottomNavigationView bottomNavigationView;
     ViewPager2 viewPager;
-
+    private PermissionManager permission;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,6 +41,19 @@ public class MainActivity extends AppCompatActivity {
 
         bottomNavigationView = findViewById(R.id.bottom_nav);
         viewPager = findViewById(R.id.view_pager);
+
+        DataLocalManager.init(getApplicationContext());
+        permission = new PermissionManager() {
+
+            @Override
+            public void ifCancelledAndCannotRequest(Activity activity) {
+
+            }
+        };
+        permission.checkAndRequestPermissions(this);
+        setUpViewPager();
+        loadSettings();
+
         bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -63,25 +83,9 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
-
-        DataLocalManager.init(getApplicationContext());
-        if (ContextCompat.checkSelfPermission(MainActivity.this, android.Manifest.permission.READ_EXTERNAL_STORAGE) !=
-                PackageManager.PERMISSION_GRANTED){
-            ActivityCompat.requestPermissions(MainActivity.this,new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, MY_READ_PERMISSION_CODE);
-        }
-        else{
-
-        }
-        load();
     }
 
-    private void load(){
-//        photoFragment = new photo_fragment();
-//        FragmentManager fragmentManager = getSupportFragmentManager();
-//        FragmentTransaction transaction = fragmentManager.beginTransaction();
-//        transaction.replace(R.id.framelayout,photoFragment);
-//        transaction.commit();
-
+    private void setUpViewPager(){
         ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager(), getLifecycle());
         viewPagerAdapter.setContext(getApplicationContext());
         viewPager.setAdapter(viewPagerAdapter);
@@ -116,58 +120,17 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
-    private void setUpViewPager() {
-        ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager(), getLifecycle());
-        viewPagerAdapter.setContext(getApplicationContext());
-        viewPager.setAdapter(viewPagerAdapter);
-
-        viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
-            @Override
-            public void onPageScrollStateChanged(int state) {
-                super.onPageScrollStateChanged(state);
-
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-
-                switch (position){
-                    case 0:
-                        bottomNavigationView.getMenu().findItem(R.id.photo).setChecked(true);
-                        break;
-                    case 1:
-
-                        bottomNavigationView.getMenu().findItem(R.id.album).setChecked(true);
-                        break;
-                    case 2:
-
-                        bottomNavigationView.getMenu().findItem(R.id.scret).setChecked(true);
-                        break;
-                    case 3:
-
-                        bottomNavigationView.getMenu().findItem(R.id.favorite).setChecked(true);
-                        break;
-                }
-            }
-        });
-    }
-
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == MY_READ_PERMISSION_CODE){
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED){
-                Toast.makeText(this, "Read external storage granted", Toast.LENGTH_LONG).show();
-                load();
-            }
-            else {
-                Toast.makeText(this, "Read external storage denied", Toast.LENGTH_LONG).show();
-
-            }
-        }
+        permission.checkResult(requestCode,permissions,grantResults);
+        System.out.println("Load" + requestCode +" "+ android.Manifest.permission.READ_EXTERNAL_STORAGE);
     }
 
+    private void loadSettings(){
+        PreferenceManager.setDefaultValues(this, R.xml.setting, false);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+    }
 
 }
