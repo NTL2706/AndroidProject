@@ -26,4 +26,12 @@
     <string name="anti_clockspin_transformation">Anti Clockspin transformation</string>
     <string name="zoom_out_transformation">Zoom out transformation</string>
     <string name="depth_transformation">Depth transformation</string>
+    <string name="create_password">Crreate password</string>
+    <string name="enter_your_password">Enter your password</string>
+    <string name="confirm_password">Confirm password</string>
+    <string name="question_for_getting_back_password">"Queston "</string>
+    <string name="write_your_question">Write your question</string>
+    <string name="your_answer_for_the_question_above">Answer</string>
+    <string name="create">Create Album Secret</string>
+    <string name="enter">Enter</string>
 </resources>
