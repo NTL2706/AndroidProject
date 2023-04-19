@@ -128,22 +128,21 @@ public class PictureActivity extends AppCompatActivity  implements  PictureInter
 
                         }
                     case R.id.starPic:
-                        System.out.println("THôi mà đừng có như vậy nữa");
+
+                        // if imageListFavor have imgPath then click remove it
                         if(!imageListFavor.add(imgPath)){
                             imageListFavor.remove(imgPath);
                         }
 
+                        // if imageListFavor have not imgPath then click add it
                         DataLocalManager.setListImg(imageListFavor);
                         Toast.makeText(PictureActivity.this, imageListFavor.size()+"", Toast.LENGTH_SHORT).show();
 
                         if(!check(imgPath)){
-
                             bottomNavigationView.getMenu().getItem(2).setIcon(R.drawable.ic_star);
                         }
                         else{
-
                             bottomNavigationView.getMenu().getItem(2).setIcon(R.drawable.ic_star_red);
-
                         }
                         break;
                     case R.id.deletePic:
@@ -195,6 +194,7 @@ public class PictureActivity extends AppCompatActivity  implements  PictureInter
 
     }
 
+    //TODO
     public Boolean check(String  Path){
         for (String img: imageListFavor) {
             if(img.equals(Path)){

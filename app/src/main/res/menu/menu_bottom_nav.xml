@@ -2,22 +2,27 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/photo"
-        android:title="@string/photo"
         android:icon="@drawable/baseline_photo_24"
-        android:iconTint="?attr/colorOnBackground"/>
+        android:iconTint="?attr/colorOnBackground"
+        android:title="@string/photo" />
 
-    <item android:id="@+id/album"
-        android:title="@string/album"
+    <item
+        android:id="@+id/album"
         android:icon="@drawable/baseline_photo_album_24"
-        android:iconTint="?attr/colorOnBackground"/>
+        android:iconTint="?attr/colorOnBackground"
+        android:title="@string/album" />
 
-    <item android:id="@+id/scret"
-        android:title="@string/secret"
-        android:icon="@drawable/baseline_security_24"
-        android:iconTint="?attr/colorOnBackground" />
-
-    <item android:id="@+id/favorite"
-        android:title="@string/favorite"
+    <item
+        android:id="@+id/favorite"
         android:icon="@drawable/ic_star"
-        android:iconTint="?attr/colorOnBackground"/>
+        android:iconTint="?attr/colorOnBackground"
+        android:title="@string/favorite" />
+
+    <item
+        android:id="@+id/scret"
+        android:icon="@drawable/baseline_security_24"
+        android:iconTint="?attr/colorOnBackground"
+        android:title="@string/secret" />
+
+
 </menu>

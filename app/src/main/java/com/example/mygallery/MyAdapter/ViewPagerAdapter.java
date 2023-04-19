@@ -8,7 +8,8 @@ import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Lifecycle;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
-import com.example.mygallery.MyFragment.photo_fragment;
+import com.example.mygallery.MyFragment.FavoriteFragment;
+import com.example.mygallery.MyFragment.PhotoFragment;
 import com.example.mygallery.models.Image;
 import com.example.mygallery.utility.Get_All_Image_From_Gallery;
 
@@ -31,23 +32,22 @@ public class ViewPagerAdapter extends FragmentStateAdapter {
     @NonNull
     @Override
     public Fragment createFragment(int position) {
-        switch (position){
+        switch (position) {
             case 0:
-                return new photo_fragment();
+                return new PhotoFragment();
             case 1:
-                break;
+                return new FavoriteFragment();
             case 2:
-                break;
+                return new FavoriteFragment();
             case 3:
-                break;
+                return new FavoriteFragment();
             default:
                 return null;
         }
-        return null;
     }
 
     @Override
     public int getItemCount() {
-        return 1;
+        return 2;
     }
 }
