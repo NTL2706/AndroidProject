@@ -7,6 +7,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -34,13 +35,19 @@ public class photo_fragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         RelativeLayout photo_layout = (RelativeLayout)inflater.inflate(R.layout.fragment_show_photo, container, false);
-
+        System.out.println("HEllo đây là photo fragment");
         context = photo_layout.getContext();
         recyclerView = photo_layout.findViewById(R.id.show_photo);
         toolbar_photo = photo_layout.findViewById(R.id.toolbar_photo);
         setting_event_toolbar();
         SetRecycleView();
         return photo_layout;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        categoryAdapter.setData(getListCategory());
 
     }
 

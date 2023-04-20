@@ -1,14 +1,21 @@
 package com.example.mygallery.mainActivities;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
+import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
@@ -34,10 +41,47 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.navigation.NavigationBarView;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Set;
 
 public class PictureActivity extends AppCompatActivity  implements  PictureInterface{
+    ActivityResultLauncher<Intent> mSActivityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+        @Override
+        public void onActivityResult(ActivityResult result) {
+            SimpleDateFormat formatter = new SimpleDateFormat("EEE, dd-MM-yyyy");
+
+            Intent data = result.getData();
+
+            Uri image = data.getData();
+
+            String[] projection = {
+                    MediaStore.MediaColumns.DATA,
+                    MediaStore.Images.Media.DATE_TAKEN,
+
+            };
+
+            Uri imageUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+            try {
+
+
+                Cursor cursor = getContentResolver().query(image, projection, null, null, null);
+                if (cursor != null) {
+                    cursor.moveToNext();
+                    ContentValues values = new ContentValues();
+                    values.put(MediaStore.MediaColumns.DATA, cursor.getString(0));
+                    values.put(MediaStore.Images.Media.DATE_TAKEN, System.currentTimeMillis());
+                    //         getContentResolver().update(image, values,null,null);
+                    Uri state = getContentResolver().insert(imageUri, values);
+                    System.out.println(state);
+                    Get_All_Image_From_Gallery.refreshAllImages();
+                    Get_All_Image_From_Gallery.updateNewImages();
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+    });
     private ViewPager viewPager_picture;
     private Toolbar toolbar_picture;
     private BottomNavigationView bottomNavigationView;
@@ -105,7 +149,7 @@ public class PictureActivity extends AppCompatActivity  implements  PictureInter
                             Drawable mDrawable = Drawable.createFromPath(imgPath);
                             Bitmap mBitmap =((BitmapDrawable) mDrawable).getBitmap();
                             String path = MediaStore.Images.Media.insertImage(getContentResolver(), mBitmap, "Image Description", null);
-                            thumb= thumb.replaceAll(" ", "");
+                            thumb = thumb.replaceAll(" ", "");
 
                             Uri uri = Uri.parse(path);
                             Intent shareIntent = new Intent(Intent.ACTION_SEND);
@@ -116,17 +160,20 @@ public class PictureActivity extends AppCompatActivity  implements  PictureInter
                         break;
                     case R.id.editPic:
                         Intent editIntent = new Intent(PictureActivity.this,DsPhotoEditorActivity.class);
+                        System.out.println(imgPath);
                         if (imgPath.contains("gif")){
                             Toast.makeText(PictureActivity.this,"Cannot edit GIF", Toast.LENGTH_LONG).show();
                         }
                         else {
                             editIntent.setData(Uri.fromFile(new File(imgPath)));
-                            editIntent.putExtra(DsPhotoEditorConstants.DS_PHOTO_EDITOR_OUTPUT_DIRECTORY, "My Gallery");
+
+                            editIntent.putExtra(DsPhotoEditorConstants.DS_PHOTO_EDITOR_OUTPUT_DIRECTORY, "My_Gallery");
                             editIntent.putExtra(DsPhotoEditorConstants.DS_TOOL_BAR_BACKGROUND_COLOR, Color.parseColor("#FF000000"));
                             editIntent.putExtra(DsPhotoEditorConstants.DS_MAIN_BACKGROUND_COLOR, Color.parseColor("#FF000000"));
-                            startActivity(editIntent);
-
+//                            startActivity(editIntent);
+                            mSActivityResultLauncher.launch(editIntent);
                         }
+                        break;
                     case R.id.starPic:
                         System.out.println("THôi mà đừng có như vậy nữa");
                         if(!imageListFavor.add(imgPath)){
@@ -188,6 +235,8 @@ public class PictureActivity extends AppCompatActivity  implements  PictureInter
             }
         });
     }
+
+
 
     public void setTitleToolbar(String imageName) {
         this.imageName = imageName;

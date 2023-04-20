@@ -32,8 +32,7 @@ public class ViewPagerAdapter extends FragmentStateAdapter {
     @Override
     public Fragment createFragment(int position) {
         switch (position){
-            case 0:
-                return new photo_fragment();
+
             case 1:
                 break;
             case 2:
@@ -41,7 +40,7 @@ public class ViewPagerAdapter extends FragmentStateAdapter {
             case 3:
                 break;
             default:
-                return null;
+                return new photo_fragment();
         }
         return null;
     }

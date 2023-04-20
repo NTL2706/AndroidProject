@@ -24,7 +24,12 @@ public class Get_All_Image_From_Gallery {
 
         return allImages;
     }
-
+    public static void refreshAllImages(){
+        allImagesPresent = false;
+    }
+    public static void updateNewImages(){
+        addNewestImagesOnly = true;
+    }
     public static void removeImageFromAllImages(String path) {  // remove deleted photo from "database"
         Log.d("Simple-Gallery","GetAllPhotosFromGallery -> Trying to remove "+path);
         for(int i=0;i<allImages.size();i++) {
@@ -68,7 +73,7 @@ public class Get_All_Image_From_Gallery {
                 try {
                     absolutePathImage = cursor.getString(columnIndexData);
                     File file = new File(absolutePathImage);
-                    System.out.println(absolutePathImage);
+
                     if (!file.canRead()) {
                         continue;
                     }
@@ -77,11 +82,12 @@ public class Get_All_Image_From_Gallery {
                 }
                 thumbnail = cursor.getString(thumb);
                 dateTaken = cursor.getLong(dateIndex);
+                System.out.println("Date" + dateTaken);
                 myCal.setTimeInMillis(dateTaken);
                 String dateText = formatter.format(myCal.getTime());
                 Image image = new Image();
                 image.setPath(absolutePathImage);
-
+                System.out.println(dateText);
                 image.setThumb(thumbnail);
                 image.setDateTaken(dateText);
                 if (image.getPath() == "") {

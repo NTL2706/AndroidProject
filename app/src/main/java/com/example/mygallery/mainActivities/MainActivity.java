@@ -60,7 +60,6 @@ public class MainActivity extends AppCompatActivity {
 
                 switch (item.getItemId()) {
                     case R.id.photo:
-
                         viewPager.setCurrentItem(0);
                         break;
 
@@ -122,10 +121,22 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onStop() {
+        super.onStop();
+        Toast.makeText(this, "Stop main",Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        System.out.println("Đang đi chơi");
+
+    }
+
+    @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         permission.checkResult(requestCode,permissions,grantResults);
-        System.out.println("Load" + requestCode +" "+ android.Manifest.permission.READ_EXTERNAL_STORAGE);
     }
 
     private void loadSettings(){
