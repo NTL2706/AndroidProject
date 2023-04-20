@@ -13,7 +13,7 @@
     <string name="photo">Photo</string>
     <string name="album">Album</string>
     <string name="secret">Secret</string>
-    <string name="favorite">Delete</string>
+    <string name="favorite">Favorite</string>
     <string name="night_mode">Night Mode</string>
     <string name="night_mode_activated"> Night mode is activated</string>
     <string name="night_mode_deactivated"> Night mode is deactivated</string>
@@ -21,4 +21,17 @@
     <string name="language_summary" translatable="false">Select your language</string>
     <string name="vietnamese">Vietnamese</string>
     <string name="english">English</string>
+    <string name="slideshow">Slide show</string>
+    <string name="add">Add</string>
+    <string name="anti_clockspin_transformation">Anti Clockspin transformation</string>
+    <string name="zoom_out_transformation">Zoom out transformation</string>
+    <string name="depth_transformation">Depth transformation</string>
+    <string name="create_password">Crreate password</string>
+    <string name="enter_your_password">Enter your password</string>
+    <string name="confirm_password">Confirm password</string>
+    <string name="question_for_getting_back_password">"Queston "</string>
+    <string name="write_your_question">Write your question</string>
+    <string name="your_answer_for_the_question_above">Answer</string>
+    <string name="create">Create Album Secret</string>
+    <string name="enter">Enter</string>
 </resources>

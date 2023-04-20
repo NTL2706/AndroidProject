@@ -2,35 +2,27 @@ package com.example.mygallery.mainActivities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager2.widget.ViewPager2;
 
-import android.Manifest;
 import android.app.Activity;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.example.mygallery.MyAdapter.ViewPagerAdapter;
-import com.example.mygallery.MyFragment.photo_fragment;
+import com.example.mygallery.MyFragment.PhotoFragment;
 import com.example.mygallery.R;
 import com.example.mygallery.mainActivities.data_favor.DataLocalManager;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 import com.karan.churi.PermissionManager.PermissionManager;
 
-import java.util.List;
-
 
 public class MainActivity extends AppCompatActivity {
     private static final int MY_READ_PERMISSION_CODE = 101;
-    private photo_fragment photoFragment;
+    private PhotoFragment photoFragment;
     BottomNavigationView bottomNavigationView;
     ViewPager2 viewPager;
     private PermissionManager permission;
@@ -68,13 +60,12 @@ public class MainActivity extends AppCompatActivity {
                         viewPager.setCurrentItem(1);
                         break;
 
-                    case R.id.scret:
+                    case R.id.favorite:
 
                         viewPager.setCurrentItem(2);
                         break;
 
-                    case R.id.favorite:
-
+                    case R.id.scret:
                         viewPager.setCurrentItem(3);
                         break;
 

@@ -13,6 +13,7 @@
     <uses-permission
         android:name="android.permission.INTERNET"
         android:required="true" />
+
     <uses-feature
         android:name="android.hardware.camera"
         android:required="false" />
@@ -25,10 +26,15 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/Theme.MyGallery"
+        android:usesCleartextTraffic="true"
+        tools:ignore="GoogleAppIndexingWarning,UnusedAttribute"
 
         tools:targetApi="31">
         <activity
             android:name=".mainActivities.PictureActivity"
+            android:exported="false" />
+        <activity
+            android:name=".mainActivities.SlideShowActivity"
             android:exported="false" />
         <activity
             android:name=".mainActivities.MainActivity"

@@ -25,7 +25,7 @@ import com.example.mygallery.utility.Get_All_Image_From_Gallery;
 import java.util.ArrayList;
 import java.util.List;
 
-public class photo_fragment extends Fragment {
+public class PhotoFragment extends Fragment {
     private Context context;
     private CategoryAdapter categoryAdapter;
     private Toolbar toolbar_photo;
