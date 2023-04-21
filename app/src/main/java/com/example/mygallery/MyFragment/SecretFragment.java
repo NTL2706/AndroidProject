@@ -327,6 +327,7 @@ public class SecretFragment extends Fragment {
 
     public ArrayList<String> getListImg() {
         File mydir = new File(secretPath);
+
         if (!mydir.exists()) {
             Toast.makeText(getActivity(), "Secret doesn't exist", Toast.LENGTH_SHORT).show();
             return null;

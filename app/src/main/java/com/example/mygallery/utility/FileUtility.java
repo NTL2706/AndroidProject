@@ -22,7 +22,6 @@ import java.io.OutputStreamWriter;
 
 public class FileUtility {
 
-
     public void deleteRecursive(File fileOrDirectory) {
 
         if (fileOrDirectory.isDirectory()) {

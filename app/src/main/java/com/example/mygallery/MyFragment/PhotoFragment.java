@@ -2,6 +2,7 @@ package com.example.mygallery.MyFragment;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.DatePickerDialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -14,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.DatePicker;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -32,12 +34,15 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mygallery.MyAdapter.CategoryAdapter;
 import com.example.mygallery.R;
+import com.example.mygallery.mainActivities.ItemAlbumActivity;
 import com.example.mygallery.mainActivities.MainActivity;
 import com.example.mygallery.models.Category;
 import com.example.mygallery.models.Image;
 import com.example.mygallery.utility.Get_All_Image_From_Gallery;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 public class PhotoFragment extends Fragment {
@@ -129,7 +134,7 @@ public class PhotoFragment extends Fragment {
                         }
                         break;
                     case R.id.search_image:
-
+                        SearchImage();
                         break;
                     case R.id.menuChoose:
                         break;
@@ -145,6 +150,48 @@ public class PhotoFragment extends Fragment {
         });
     }
 
+    private void SearchImage (){
+        Calendar calendar = Calendar.getInstance();
+        int day =calendar.get(Calendar.DATE);
+        int month = calendar.get(Calendar.MONTH);
+        int year = calendar.get(Calendar.YEAR);
+
+        DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(), new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
+                calendar.set(i,i1,i2);
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
+                String pickdate = simpleDateFormat.format(calendar.getTime());
+                showImageByDate(pickdate);
+            }
+        },year,month,day);
+        datePickerDialog.show();
+    }
+
+    private void showImageByDate(String date) {
+        Toast.makeText(getContext(), date, Toast.LENGTH_LONG).show();
+        List<Image> imageList = Get_All_Image_From_Gallery.getAllImageFromGallery(getContext());
+        List<Image> listImageSearch = new ArrayList<>();
+
+        for (Image image : imageList) {
+            if (image.getDateTaken().contains(date)) {
+                listImageSearch.add(image);
+            }
+        }
+        System.out.println(listImageSearch.size());
+        if (listImageSearch.size() == 0) {
+            Toast.makeText(getContext(), "have not any image", Toast.LENGTH_LONG).show();
+        } else {
+            ArrayList<String> listStringImage = new ArrayList<>();
+            for (Image image : listImageSearch) {
+                listStringImage.add(image.getPath());
+            }
+            Intent intent = new Intent(context, ItemAlbumActivity.class);
+            intent.putStringArrayListExtra("data", listStringImage);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(intent);
+        }
+    }
     private List<Category> getListCategory() {
         List<Category> categoryList = new ArrayList<>();
         int categoryCount = 0;

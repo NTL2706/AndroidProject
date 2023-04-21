@@ -340,6 +340,8 @@ public class PictureActivity extends AppCompatActivity  implements  PictureInter
                                 else {
                                     FileUtility fu = new FileUtility();
                                     File img = new File(imgPath);
+
+                                    System.out.println(scrPath + File.separator + img.getName());
                                     //check storage have image secret (check path)
                                     // if false: add image to album secret
                                     // else true: remote image form album secret
@@ -351,6 +353,7 @@ public class PictureActivity extends AppCompatActivity  implements  PictureInter
                                         File folder = new File(outputPath);
                                         File imgFile = new File(img.getPath());
                                         File desImgFile = new File(outputPath, imgFile.getName());
+
                                         if (!folder.exists()) {
                                             folder.mkdir();
                                         }
