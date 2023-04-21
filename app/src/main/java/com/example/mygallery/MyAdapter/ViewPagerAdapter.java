@@ -38,7 +38,7 @@ public class ViewPagerAdapter extends FragmentStateAdapter {
             case 0:
                 return new PhotoFragment();
             case 1:
-                return new FavoriteFragment();
+                return new SecretFragment();
             case 2:
                 return new FavoriteFragment();
             case 3:
@@ -50,6 +50,6 @@ public class ViewPagerAdapter extends FragmentStateAdapter {
 
     @Override
     public int getItemCount() {
-        return 2;
+        return 4;
     }
 }

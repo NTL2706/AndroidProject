@@ -37,6 +37,9 @@
             android:name=".mainActivities.SlideShowActivity"
             android:exported="false" />
         <activity
+            android:name=".mainActivities.ItemAlbumActivity"
+            android:exported="false"/>
+        <activity
             android:name=".mainActivities.MainActivity"
             android:exported="true"
 

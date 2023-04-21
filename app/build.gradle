@@ -60,5 +60,5 @@ dependencies {
     implementation 'com.github.karanchuri:PermissionManager:0.1.0'
 
     //library for amazing image slider for the Android
-     implementation 'com.github.smarteist:autoimageslider:1.4.0'
+    implementation 'com.github.smarteist:autoimageslider:1.4.0'
 }

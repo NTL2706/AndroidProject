@@ -20,8 +20,10 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.view.MenuItem;
@@ -34,6 +36,7 @@ import com.dsphotoeditor.sdk.utils.DsPhotoEditorConstants;
 import com.example.mygallery.MyAdapter.SlideImageAdapter;
 import com.example.mygallery.R;
 import com.example.mygallery.mainActivities.data_favor.DataLocalManager;
+import com.example.mygallery.utility.FileUtility;
 import com.example.mygallery.utility.Get_All_Image_From_Gallery;
 import com.example.mygallery.utility.PictureInterface;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -45,7 +48,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Set;
 
-public class PictureActivity extends AppCompatActivity  implements  PictureInterface{
+
+public class PictureActivity extends AppCompatActivity  implements  PictureInterface {
     ActivityResultLauncher<Intent> mSActivityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
         @Override
         public void onActivityResult(ActivityResult result) {
@@ -82,6 +86,9 @@ public class PictureActivity extends AppCompatActivity  implements  PictureInter
             }
         }
     });
+
+
+
     private ViewPager viewPager_picture;
     private Toolbar toolbar_picture;
     private BottomNavigationView bottomNavigationView;
@@ -101,12 +108,13 @@ public class PictureActivity extends AppCompatActivity  implements  PictureInter
 
     private BottomSheetDialog bottomSheetDialog;
     private RecyclerView ryc_album;
-    public static Set<String> imageListFavor ;
+    public static Set<String> imageListFavor;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_picture);
-        StrictMode.VmPolicy.Builder builder= new StrictMode.VmPolicy.Builder();
+        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
         mappingControls();
         events();
@@ -125,29 +133,29 @@ public class PictureActivity extends AppCompatActivity  implements  PictureInter
         setUpSilder();
         bottomNavigationViewEvents();
     }
-    private void mappingControls(){
+
+    private void mappingControls() {
         viewPager_picture = findViewById(R.id.viewPager_picture);
         bottomNavigationView = findViewById(R.id.bottom_picture);
         toolbar_picture = findViewById(R.id.toolbar_picture);
         frame_viewPager = findViewById(R.id.frame_viewPager);
     }
 
-    private void bottomNavigationViewEvents(){
+    private void bottomNavigationViewEvents() {
         bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 Uri targetUri = Uri.parse("file://" + thumb);
-                switch (item.getItemId()){
+                switch (item.getItemId()) {
                     case R.id.sharePic:
-                        if (thumb.contains("gif")){
+                        if (thumb.contains("gif")) {
                             Intent share = new Intent(Intent.ACTION_SEND);
                             share.setType("image/*");
                             share.putExtra(Intent.EXTRA_STREAM, targetUri);
-                            startActivity( Intent.createChooser(share, "Share this image to your friends!"));
-                        }
-                        else {
+                            startActivity(Intent.createChooser(share, "Share this image to your friends!"));
+                        } else {
                             Drawable mDrawable = Drawable.createFromPath(imgPath);
-                            Bitmap mBitmap =((BitmapDrawable) mDrawable).getBitmap();
+                            Bitmap mBitmap = ((BitmapDrawable) mDrawable).getBitmap();
                             String path = MediaStore.Images.Media.insertImage(getContentResolver(), mBitmap, "Image Description", null);
                             thumb = thumb.replaceAll(" ", "");
 
@@ -159,12 +167,15 @@ public class PictureActivity extends AppCompatActivity  implements  PictureInter
                         }
                         break;
                     case R.id.editPic:
+
                         Intent editIntent = new Intent(PictureActivity.this,DsPhotoEditorActivity.class);
                         System.out.println(imgPath);
-                        if (imgPath.contains("gif")){
-                            Toast.makeText(PictureActivity.this,"Cannot edit GIF", Toast.LENGTH_LONG).show();
-                        }
-                        else {
+
+
+                        if (imgPath.contains("gif")) {
+                            Toast.makeText(PictureActivity.this, "Cannot edit GIF", Toast.LENGTH_LONG).show();
+                        } else {
+
                             editIntent.setData(Uri.fromFile(new File(imgPath)));
 
                             editIntent.putExtra(DsPhotoEditorConstants.DS_PHOTO_EDITOR_OUTPUT_DIRECTORY, "My_Gallery");
@@ -174,21 +185,20 @@ public class PictureActivity extends AppCompatActivity  implements  PictureInter
                             mSActivityResultLauncher.launch(editIntent);
                         }
                         break;
-                    case R.id.starPic:
+                        case R.id.starPic:
 
                         // if imageListFavor have imgPath then click remove it
-                        if(!imageListFavor.add(imgPath)){
+                        if (!imageListFavor.add(imgPath)) {
                             imageListFavor.remove(imgPath);
                         }
 
                         // if imageListFavor have not imgPath then click add it
                         DataLocalManager.setListImg(imageListFavor);
-                        Toast.makeText(PictureActivity.this, imageListFavor.size()+"", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(PictureActivity.this, imageListFavor.size() + "", Toast.LENGTH_SHORT).show();
 
-                        if(!check(imgPath)){
+                        if (!check(imgPath)) {
                             bottomNavigationView.getMenu().getItem(2).setIcon(R.drawable.ic_star);
-                        }
-                        else{
+                        } else {
                             bottomNavigationView.getMenu().getItem(2).setIcon(R.drawable.ic_star_red);
                         }
                         break;
@@ -237,6 +247,7 @@ public class PictureActivity extends AppCompatActivity  implements  PictureInter
 
 
 
+
     public void setTitleToolbar(String imageName) {
         this.imageName = imageName;
         toolbar_picture.setTitle(imageName);
@@ -244,18 +255,18 @@ public class PictureActivity extends AppCompatActivity  implements  PictureInter
     }
 
     //TODO
-    public Boolean check(String  Path){
-        for (String img: imageListFavor) {
-            if(img.equals(Path)){
+    public Boolean check(String Path) {
+        for (String img : imageListFavor) {
+            if (img.equals(Path)) {
                 return true;
             }
         }
         return false;
     }
 
-    private void setUpSilder(){
+    private void setUpSilder() {
         slideImageAdapter = new SlideImageAdapter();
-        slideImageAdapter.setData(imageListThumb,imageListPath);
+        slideImageAdapter.setData(imageListThumb, imageListPath);
         slideImageAdapter.setContext(getApplicationContext());
         slideImageAdapter.setPictureInterface(activityPicture);
         viewPager_picture.setAdapter(slideImageAdapter);
@@ -268,10 +279,9 @@ public class PictureActivity extends AppCompatActivity  implements  PictureInter
                 imgPath = imageListPath.get(position);
 
                 setTitleToolbar(thumb.substring(thumb.lastIndexOf("/") + 1));
-                if (!check(imgPath)){
+                if (!check(imgPath)) {
                     bottomNavigationView.getMenu().getItem(2).setIcon(R.drawable.ic_star);
-                }
-                else {
+                } else {
                     bottomNavigationView.getMenu().getItem(2).setIcon(R.drawable.ic_star_red);
                 }
             }
@@ -291,19 +301,91 @@ public class PictureActivity extends AppCompatActivity  implements  PictureInter
 
     private void setUpToolBar() {
         // Toolbar events
-        toolbar_picture.inflateMenu(R.menu.menu_of_top);
+        toolbar_picture.inflateMenu(R.menu.menu_top_picture);
         setTitleToolbar("Hello");
 
-        // Show back button
+        // Show and custom action back button
         toolbar_picture.setNavigationIcon(R.drawable.baseline_arrow_back_24);
         toolbar_picture.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 finish();
             }
         });
+
+        // Show and custom click menu
+        toolbar_picture.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                int idItem = item.getItemId();
+
+                switch (idItem) {
+                    case R.id.menuAddSecret:
+                        // show dialog to notification
+                        AlertDialog.Builder builder = new AlertDialog.Builder(PictureActivity.this);
+
+                        builder.setTitle("Confirm");
+                        builder.setMessage("Do you want to hide/show this image?");
+
+                        // if dialog click "YES"
+                        builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                String scrPath = Environment.getExternalStorageDirectory() + File.separator + ".secret";
+                                File scrDir = new File(scrPath);
+                                // if Dir not exit
+                                if (!scrDir.exists()) {
+                                    Toast.makeText(PictureActivity.this, "You haven't created secret album", Toast.LENGTH_SHORT).show();
+                                }
+                                // if Dir is created
+                                else {
+                                    FileUtility fu = new FileUtility();
+                                    File img = new File(imgPath);
+                                    //check storage have image secret (check path)
+                                    // if false: add image to album secret
+                                    // else true: remote image form album secret
+                                    if (!(scrPath + File.separator + img.getName()).equals(imgPath)) {
+                                        fu.moveFile(imgPath, img.getName(), scrPath);
+                                        Toast.makeText(PictureActivity.this, "Your image is hidden", Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        String outputPath = Environment.getExternalStorageDirectory() + File.separator + "DCIM" + File.separator + "Restore";
+                                        File folder = new File(outputPath);
+                                        File imgFile = new File(img.getPath());
+                                        File desImgFile = new File(outputPath, imgFile.getName());
+                                        if (!folder.exists()) {
+                                            folder.mkdir();
+                                        }
+                                        imgFile.renameTo(desImgFile);
+                                        imgFile.deleteOnExit();
+                                        desImgFile.getPath();
+                                        MediaScannerConnection.scanFile(getApplicationContext(), new String[]{outputPath + File.separator + desImgFile.getName()}, null, null);
+                                    }
+                                }
+                                Intent intentResult = new Intent();
+                                intentResult.putExtra("path_img", imgPath);
+                                setResult(RESULT_OK, intentResult);
+                                finish();
+                                dialog.dismiss();
+                            }
+                        });
+                        builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                // Do nothing
+                                dialog.dismiss();
+                            }
+                        });
+
+                        AlertDialog alert = builder.create();
+                        alert.show();
+
+                        break;
+                }
+
+                return false;
+            }
+        });
     }
+
     private void setDataIntent() {
         intent = getIntent();
         imageListPath = intent.getStringArrayListExtra("data_list_path");
@@ -322,6 +404,7 @@ public class PictureActivity extends AppCompatActivity  implements  PictureInter
             toolbar_picture.setVisibility(View.VISIBLE);
         }
     }
+
     @Override
     public void actionShow(boolean flag) {
         showNavigation(flag);
