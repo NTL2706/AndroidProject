@@ -1,7 +1,15 @@
 package com.example.mygallery.MyFragment;
 
+import android.Manifest;
+import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -9,15 +17,22 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mygallery.MyAdapter.CategoryAdapter;
 import com.example.mygallery.R;
+import com.example.mygallery.mainActivities.MainActivity;
 import com.example.mygallery.models.Category;
 import com.example.mygallery.models.Image;
 import com.example.mygallery.utility.Get_All_Image_From_Gallery;
@@ -26,11 +41,37 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PhotoFragment extends Fragment {
+    ActivityResultLauncher<Intent> mLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+        @Override
+        public void onActivityResult(ActivityResult result) {
+            try {
+                if (result.getResultCode() == Activity.RESULT_OK){
+//                    System.out.println("Chup anh thanh cong")
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+
+        }
+    });
+    ActivityResultLauncher<String> LauncherCamera = registerForActivityResult(new ActivityResultContracts.RequestPermission(), new ActivityResultCallback<Boolean>() {
+        @Override
+        public void onActivityResult(Boolean result) {
+            if (result){
+                Toast.makeText(context, "permission is granted", Toast.LENGTH_LONG).show();
+            }
+        }
+    });
+    private int CAMERA_PERMISSION_CODE = 1;
+    private int CAMERA = 2;
     private Context context;
     private CategoryAdapter categoryAdapter;
     private Toolbar toolbar_photo;
     private List<Image> imageList;
     private RecyclerView recyclerView;
+    private Uri imageUri;
+    private Bitmap thumbnail;
+    private String imageurl;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -68,8 +109,27 @@ public class PhotoFragment extends Fragment {
                 int id = item.getItemId();
                 switch (id){
                     case R.id.menuCamera:
+                        if (ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED){
+
+                            ContentValues values = new ContentValues();
+                            values.put(MediaStore.Images.Media.TITLE, "Take a picture");
+                            values.put(MediaStore.Images.Media.DESCRIPTION, "New picture");
+                            imageUri = getActivity().getApplicationContext().getContentResolver().insert(
+                                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+                            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                            intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+
+                            mLauncher.launch(intent);
+
+                            Get_All_Image_From_Gallery.refreshAllImages();
+                            Get_All_Image_From_Gallery.updateNewImages();
+
+                        }else {
+                            LauncherCamera.launch(Manifest.permission.CAMERA);
+                        }
                         break;
                     case R.id.search_image:
+
                         break;
                     case R.id.menuChoose:
                         break;
@@ -104,5 +164,9 @@ public class PhotoFragment extends Fragment {
         } catch (Exception e) {
             return null;
         }
+    }
+
+    public void takeImage (){
+
     }
 }
