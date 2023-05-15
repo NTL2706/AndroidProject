@@ -26,6 +26,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MyGallery"
         android:usesCleartextTraffic="true"
+
         tools:ignore="GoogleAppIndexingWarning,UnusedAttribute"
 
         tools:targetApi="31">
@@ -33,11 +34,20 @@
             android:name=".mainActivities.PictureActivity"
             android:exported="false" />
         <activity
+            android:name=".mainActivities.AlbumItem"
+            android:exported="false" />
+        <activity
+            android:name=".mainActivities.FullScreenImageActivity"
+            android:exported="false" />
+        <activity
             android:name=".mainActivities.SlideShowActivity"
             android:exported="false" />
         <activity
             android:name=".mainActivities.ItemAlbumActivity"
             android:exported="false"/>
+<!--        <activity-->
+<!--            android:name=".MyFragment.AlbumFragment"-->
+<!--            android:exported="false"/>-->
         <activity
             android:name=".mainActivities.MainActivity"
             android:exported="true"

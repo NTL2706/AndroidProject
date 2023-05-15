@@ -2,40 +2,39 @@ package com.example.mygallery.models;
 
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class Album {
-    private String pathFolder;
-    private Image img;
-    private String name;
-    private List<Image> listImage;
-    public Album(Image img, String name) {
-        this.name = name;
-        this.img = img;
-        listImage = new ArrayList<>();
+    private String albumName;
+    private ArrayList<String> picturePaths;
+
+    public Album(String albumName, ArrayList<String> picturePaths) {
+        this.albumName = albumName;
+        this.picturePaths = picturePaths;
     }
 
-    public void setPathFolder(String pathFolder) {
-        this.pathFolder = pathFolder;
+    public String getAlbumName() {
+        return albumName;
     }
 
-    public String getPathFolder() {
-        return pathFolder;
+    public void setAlbumName(String albumName) {
+        this.albumName = albumName;
     }
 
-    public Image getImg() {
-        return img;
+    public ArrayList<String> getPicturePaths() {
+        return picturePaths;
     }
-    public String getName() {
-        return name;
+
+    public void setPicturePaths(ArrayList<String> picturePaths) {
+        this.picturePaths = picturePaths;
     }
-    public List<Image> getList() {
-        return listImage;
-    }
-    public void addList(List<Image> list) {
-        listImage = new ArrayList<>(list);
-    }
-    public void addItem(Image img) {
-        listImage.add(img);
+
+    public boolean addNewPath(String newPath) {
+        // To avoid duplications in album data
+        for (String p: picturePaths) {
+            if (p.equals(newPath))
+                return false;
+        }
+        picturePaths.add(newPath);
+        return true;
     }
 }

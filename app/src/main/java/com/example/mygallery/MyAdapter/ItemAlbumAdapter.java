@@ -18,7 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.mygallery.mainActivities.PictureActivity;
 import com.example.mygallery.R;
-import com.example.mygallery.models.Album;
+//import com.example.mygallery.models.Album;
 
 
 import java.util.ArrayList;

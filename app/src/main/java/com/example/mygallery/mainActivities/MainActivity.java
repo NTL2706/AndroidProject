@@ -101,11 +101,11 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case 2:
 
-                        bottomNavigationView.getMenu().findItem(R.id.scret).setChecked(true);
+                        bottomNavigationView.getMenu().findItem(R.id.favorite).setChecked(true);
                         break;
                     case 3:
 
-                        bottomNavigationView.getMenu().findItem(R.id.favorite).setChecked(true);
+                        bottomNavigationView.getMenu().findItem(R.id.scret).setChecked(true);
                         break;
                 }
             }

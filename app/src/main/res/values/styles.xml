@@ -14,7 +14,18 @@
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:windowSoftInputMode">adjustResize</item>
     </style>
+
     <style name="myPhotoView" parent="Theme.AppCompat">
 
+    </style>
+    <style name="AlertDialogCustom" parent="Theme.MaterialComponents.Dialog.Alert">
+        <item name="buttonBarButtonStyle">@style/Text</item>
+    </style>
+
+    <style name="AlertDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="buttonBarButtonStyle">@style/Text</item>
+    </style>
+    <style name="Text">
+        <item name="android:textColor">@color/black</item>
     </style>
 </resources>

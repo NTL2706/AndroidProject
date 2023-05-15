@@ -1,12 +1,5 @@
 package com.example.mygallery.mainActivities;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.viewpager.widget.ViewPager;
-
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -19,16 +12,28 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.StrictMode;
 import android.provider.MediaStore;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
+import android.widget.ListView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
 
 import com.dsphotoeditor.sdk.activity.DsPhotoEditorActivity;
 import com.dsphotoeditor.sdk.utils.DsPhotoEditorConstants;
 import com.example.mygallery.MyAdapter.SlideImageAdapter;
 import com.example.mygallery.R;
 import com.example.mygallery.mainActivities.data_favor.DataLocalManager;
+import com.example.mygallery.utility.AlbumUtility;
 import com.example.mygallery.utility.FileUtility;
 import com.example.mygallery.utility.Get_All_Image_From_Gallery;
 import com.example.mygallery.utility.PictureInterface;
@@ -48,6 +53,7 @@ public class PictureActivity extends AppCompatActivity implements PictureInterfa
     private ArrayList<String> imageListThumb;
     private ArrayList<String> imageListPath;
     private Intent intent;
+    File[] pictureFiles;
     private int pos;
     private SlideImageAdapter slideImageAdapter;
     private PictureInterface activityPicture;
@@ -321,6 +327,9 @@ public class PictureActivity extends AppCompatActivity implements PictureInterfa
                         alert.show();
 
                         break;
+                    case R.id.menuAddAlbum:
+                        addPictureToAlbum();
+                        break;
                 }
 
                 return false;
@@ -350,5 +359,43 @@ public class PictureActivity extends AppCompatActivity implements PictureInterfa
     @Override
     public void actionShow(boolean flag) {
         showNavigation(flag);
+    }
+
+    private void addPictureToAlbum() {
+        View addToAlbumView = LayoutInflater.from(this).inflate(R.layout.choose_album_form, null);
+        ListView chooseAlbumListView = addToAlbumView.findViewById(R.id.chooseAlbumListView);
+
+        ArrayList<String> albums = AlbumUtility.getInstance(this).getAllAlbums();
+        //albums.removeIf(album -> album.equals("Favorite") || album.equals("Trashed"));
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_list_item_multiple_choice, albums);
+        chooseAlbumListView.setAdapter(adapter);
+
+        AlertDialog.Builder addToAlbumDialog = new AlertDialog.Builder(this, R.style.AlertDialog);
+        addToAlbumDialog.setView(addToAlbumView);
+        ArrayList<String> chosen = new ArrayList<String>();
+
+        addToAlbumDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                //String picturePath = pictureFiles[mViewPager.getCurrentItem()].getAbsolutePath();
+                for (int index = 0; index < chooseAlbumListView.getCount(); ++index) {
+                    if (chooseAlbumListView.isItemChecked(index))
+                        chosen.add(chooseAlbumListView.getItemAtPosition(index).toString());
+                }
+                for (String s : chosen) {
+                    AlbumUtility.getInstance(PictureActivity.this).addPictureToAlbum(s, imgPath);
+                }
+                Toast.makeText(PictureActivity.this, "Added to selected albums", Toast.LENGTH_SHORT).show();
+            }
+        });
+        addToAlbumDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                Toast.makeText(PictureActivity.this, "CANCELED", Toast.LENGTH_SHORT).show();
+            }
+        });
+        addToAlbumDialog.create();
+        addToAlbumDialog.show();
     }
 }

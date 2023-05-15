@@ -31,6 +31,9 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
     public ImageAdapter(Context context){
         this.context = context;
     }
+    public ImageAdapter(ArrayList<String> picturePaths) {
+        listThumb = picturePaths;
+    }
 
     public void setData(List<Image> listImages) {
         this.listImages = listImages;
