@@ -26,9 +26,12 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.StrictMode;
 import android.provider.MediaStore;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.dsphotoeditor.sdk.activity.DsPhotoEditorActivity;
@@ -36,6 +39,7 @@ import com.dsphotoeditor.sdk.utils.DsPhotoEditorConstants;
 import com.example.mygallery.MyAdapter.SlideImageAdapter;
 import com.example.mygallery.R;
 import com.example.mygallery.mainActivities.data_favor.DataLocalManager;
+import com.example.mygallery.utility.AlbumUtility;
 import com.example.mygallery.utility.FileUtility;
 import com.example.mygallery.utility.Get_All_Image_From_Gallery;
 import com.example.mygallery.utility.PictureInterface;
@@ -49,7 +53,7 @@ import java.util.ArrayList;
 import java.util.Set;
 
 
-public class PictureActivity extends AppCompatActivity  implements  PictureInterface {
+public class PictureActivity extends AppCompatActivity implements PictureInterface {
     ActivityResultLauncher<Intent> mSActivityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
         @Override
         public void onActivityResult(ActivityResult result) {
@@ -81,12 +85,11 @@ public class PictureActivity extends AppCompatActivity  implements  PictureInter
                     Get_All_Image_From_Gallery.refreshAllImages();
                     Get_All_Image_From_Gallery.updateNewImages();
                 }
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
     });
-
 
 
     private ViewPager viewPager_picture;
@@ -168,7 +171,7 @@ public class PictureActivity extends AppCompatActivity  implements  PictureInter
                         break;
                     case R.id.editPic:
 
-                        Intent editIntent = new Intent(PictureActivity.this,DsPhotoEditorActivity.class);
+                        Intent editIntent = new Intent(PictureActivity.this, DsPhotoEditorActivity.class);
                         System.out.println(imgPath);
 
 
@@ -185,7 +188,7 @@ public class PictureActivity extends AppCompatActivity  implements  PictureInter
                             mSActivityResultLauncher.launch(editIntent);
                         }
                         break;
-                        case R.id.starPic:
+                    case R.id.starPic:
 
                         // if imageListFavor have imgPath then click remove it
                         if (!imageListFavor.add(imgPath)) {
@@ -244,8 +247,6 @@ public class PictureActivity extends AppCompatActivity  implements  PictureInter
             }
         });
     }
-
-
 
 
     public void setTitleToolbar(String imageName) {
@@ -382,6 +383,10 @@ public class PictureActivity extends AppCompatActivity  implements  PictureInter
                         alert.show();
 
                         break;
+
+                    case R.id.menuAddAlbum:
+                        addPictureToAlbum();
+                        break;
                 }
 
                 return false;
@@ -411,5 +416,42 @@ public class PictureActivity extends AppCompatActivity  implements  PictureInter
     @Override
     public void actionShow(boolean flag) {
         showNavigation(flag);
+    }
+
+    private void addPictureToAlbum() {
+        View addToAlbumView = LayoutInflater.from(this).inflate(R.layout.choose_album_form, null);
+        ListView chooseAlbumListView = addToAlbumView.findViewById(R.id.chooseAlbumListView);
+
+        ArrayList<String> albums = AlbumUtility.getInstance(this).getAllAlbums();
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_list_item_multiple_choice, albums);
+        chooseAlbumListView.setAdapter(adapter);
+
+        AlertDialog.Builder addToAlbumDialog = new AlertDialog.Builder(this, R.style.AlertDialog);
+        addToAlbumDialog.setView(addToAlbumView);
+        ArrayList<String> chosen = new ArrayList<String>();
+
+        addToAlbumDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                //String picturePath = pictureFiles[mViewPager.getCurrentItem()].getAbsolutePath();
+                for (int index = 0; index < chooseAlbumListView.getCount(); ++index) {
+                    if (chooseAlbumListView.isItemChecked(index))
+                        chosen.add(chooseAlbumListView.getItemAtPosition(index).toString());
+                }
+                for (String s : chosen) {
+                    AlbumUtility.getInstance(PictureActivity.this).addPictureToAlbum(s, imgPath);
+                }
+                Toast.makeText(PictureActivity.this, "Added to selected albums", Toast.LENGTH_SHORT).show();
+            }
+        });
+        addToAlbumDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                Toast.makeText(PictureActivity.this, "CANCELED", Toast.LENGTH_SHORT).show();
+            }
+        });
+        addToAlbumDialog.create();
+        addToAlbumDialog.show();
     }
 }

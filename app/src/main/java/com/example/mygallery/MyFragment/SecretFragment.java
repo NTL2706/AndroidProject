@@ -325,6 +325,8 @@ public class SecretFragment extends Fragment {
         this.getContext().startActivity(intent);
     }
 
+
+
     public ArrayList<String> getListImg() {
         File mydir = new File(secretPath);
 
