@@ -34,14 +34,14 @@ public class Get_All_Image_From_Gallery {
         Log.d("Simple-Gallery","GetAllPhotosFromGallery -> Trying to remove "+path);
         for(int i=0;i<allImages.size();i++) {
             if(allImages.get(i).getPath().equals(path)) {
-                Log.d("Simple-Gallery","GetAllPhotosFromGallery -> Image removed from allImages. Breaking");
+                Log.d("My-Photo","GetAllPhotosFromGallery -> Image removed from allImages. Breaking");
                 allImages.remove(i);
                 break;
             }
         }
     }
     public static final List<Image> getAllImageFromGallery(Context context) {
-        Log.d("Simple-Gallery","GetAllPhotoFromGallery->getAllImageFromGallery()");
+        Log.d("My-Photo","GetAllPhotoFromGallery->getAllImageFromGallery()");
         if(!allImagesPresent) { // Do not fetch photos between Activity switching.
             // MASSIVE performance improvement. Like over 9000.
             Uri uri;
@@ -104,7 +104,7 @@ public class Get_All_Image_From_Gallery {
                         }
                     }
                     if(iscontained){
-                        Log.d("Simple-Gallery","GetAllPhotosFromGallery -> Image already in allImages. Breaking");
+                        Log.d("MyPhoto","GetAllPhotosFromGallery -> Image already in allImages. Breaking");
                         addNewestImagesOnly = false;
                         allImagesPresent = true;
                         cursor.close(); // Android Studio suggestion

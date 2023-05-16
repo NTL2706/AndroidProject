@@ -17,4 +17,12 @@
     <style name="myPhotoView" parent="Theme.AppCompat">
 
     </style>
+
+   <style name="AlertDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="buttonBarButtonStyle">@style/Text</item>
+    </style>
+
+    <style name="Text">
+        <item name="android:textColor">@color/black</item>
+    </style>
 </resources>
