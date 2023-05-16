@@ -17,5 +17,6 @@
     <color name="darkOnBackground">#FFFFFF</color>
     <color name="darkOnSurface">#FFFFFFFF</color>
     <color name="darkTextColorPrimary">#FFFFFFFF</color>
+    <color name="purple_700">#FF3700B3</color>
 
 </resources>
