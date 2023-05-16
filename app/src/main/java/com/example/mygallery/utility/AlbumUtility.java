@@ -141,44 +141,29 @@ public class AlbumUtility {
         return false;
     }
 
-//    public boolean deletePictureInAlbum(String albumName, String picturePath) {
-//        // Get all album data
-//        ArrayList<Album> data = getAllAlbumData();
-//        // Get AlbumData object matching the name
-//        Album albumData = findDataByAlbumName(albumName);
-//        if (albumData != null) {
-//            // Remove required path in AlbumData object
-//            ArrayList<String> paths = albumData.getPicturePaths();
-//            paths.removeIf(s -> s.equals(picturePath));
-//            // Set new paths for AlbumData object
-//            albumData.setPicturePaths(paths);
-//            // Remove that AlbumData in total album data
-//            data.removeIf(d -> d.getAlbumName().equals(albumName));
-//            // Add modified AlbumData object to data
-//            data.add(albumData);
-//
-//            // Apply changes to shared preferences
-//            setAllAlbumData(data);
-//            return true;
-//        }
-//        return false;
-//    }
+    public boolean deletePictureInAlbum(String albumName, String picturePath) {
+        // Get all album data
+        ArrayList<Album> data = getAllAlbumData();
+        // Get AlbumData object matching the name
+        Album albumData = findDataByAlbumName(albumName);
+        if (albumData != null) {
+            // Remove required path in AlbumData object
+            ArrayList<String> paths = albumData.getPicturePaths();
+            paths.removeIf(s -> s.equals(picturePath));
+            // Set new paths for AlbumData object
+            albumData.setPicturePaths(paths);
+            // Remove that AlbumData in total album data
+            data.removeIf(d -> d.getAlbumName().equals(albumName));
+            // Add modified AlbumData object to data
+            data.add(albumData);
 
+            // Apply changes to shared preferences
+            setAllAlbumData(data);
+            return true;
+        }
+        return false;
+    }
 
-
-//    public boolean deletePictureInAllAlbums(String picturePath) {
-//        ArrayList<Album> data = getAllAlbumData();
-//        if (data != null) {
-//            for(Album d : data) {
-//                ArrayList<String> paths = d.getPicturePaths();
-//                paths.removeIf(path -> path.equals(picturePath));
-//                d.setPicturePaths(paths);
-//            }
-//            setAllAlbumData(data);
-//            return true;
-//        }
-//        return false;
-//    }
 
     public Album findDataByAlbumName(String albumName) {
         ArrayList<Album> data = getAllAlbumData();

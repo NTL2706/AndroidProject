@@ -32,7 +32,7 @@ public class AlbumItem extends AppCompatActivity {
         picturePaths = AlbumUtility.getInstance(getApplicationContext()).findDataByAlbumName(albumName).getPicturePaths();
 
         RecyclerView picturesRecyclerView = findViewById(R.id.ryc_list_album);
-        PictureAdapter adapter = new PictureAdapter(picturePaths);
+        PictureAdapter adapter = new PictureAdapter(albumName, picturePaths);
         picturesRecyclerView.setAdapter(adapter);
         picturesRecyclerView.setLayoutManager(new GridLayoutManager(this, 3));
     }

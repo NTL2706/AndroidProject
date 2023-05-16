@@ -16,9 +16,11 @@ import com.example.mygallery.mainActivities.FullScreenImageActivity;
 import java.util.ArrayList;
 
 public class PictureAdapter extends RecyclerView.Adapter<PictureAdapter.ViewHolder> {
+    private String albumName;
     private ArrayList<String> picturePaths;
 
-    public PictureAdapter(ArrayList<String> picturePaths) {
+    public PictureAdapter(String albumName, ArrayList<String> picturePaths) {
+        this.albumName = albumName;
         this.picturePaths = picturePaths;
     }
 
@@ -54,6 +56,7 @@ public class PictureAdapter extends RecyclerView.Adapter<PictureAdapter.ViewHold
                     int position = getAdapterPosition();
                     Intent intent = new Intent(v.getContext(), FullScreenImageActivity.class);
                     intent.putExtra("imagePath", picturePaths.get(position));
+                    intent.putExtra("albumName", albumName);
                     v.getContext().startActivity(intent);
                 }
             });

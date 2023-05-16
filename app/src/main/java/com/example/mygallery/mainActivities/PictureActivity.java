@@ -366,7 +366,6 @@ public class PictureActivity extends AppCompatActivity implements PictureInterfa
         ListView chooseAlbumListView = addToAlbumView.findViewById(R.id.chooseAlbumListView);
 
         ArrayList<String> albums = AlbumUtility.getInstance(this).getAllAlbums();
-        //albums.removeIf(album -> album.equals("Favorite") || album.equals("Trashed"));
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_list_item_multiple_choice, albums);
         chooseAlbumListView.setAdapter(adapter);
