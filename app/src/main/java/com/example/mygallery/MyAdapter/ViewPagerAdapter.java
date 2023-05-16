@@ -46,6 +46,7 @@ public class ViewPagerAdapter extends FragmentStateAdapter {
             default:
                 return null;
         }
+
     }
 
     @Override

@@ -2,10 +2,13 @@ package com.example.mygallery.mainActivities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.viewpager2.widget.ViewPager2;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.MenuItem;
@@ -37,42 +40,48 @@ public class MainActivity extends AppCompatActivity {
         DataLocalManager.init(getApplicationContext());
         permission = new PermissionManager() {
 
+
             @Override
             public void ifCancelledAndCannotRequest(Activity activity) {
 
             }
         };
-        permission.checkAndRequestPermissions(this);
-        setUpViewPager();
-        loadSettings();
+        if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED){
+            load();
+        }else {
+            permission.checkAndRequestPermissions(this);
+        }
 
-        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-
-                switch (item.getItemId()) {
-                    case R.id.photo:
-                        viewPager.setCurrentItem(0);
-                        break;
-
-                    case R.id.album:
-
-                        viewPager.setCurrentItem(1);
-                        break;
-
-                    case R.id.favorite:
-
-                        viewPager.setCurrentItem(2);
-                        break;
-
-                    case R.id.scret:
-                        viewPager.setCurrentItem(3);
-                        break;
-
-                }
-                return true;
-            }
-        });
+//        setUpViewPager();
+//        loadSettings();
+//
+//        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+//            @Override
+//            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+//
+//                switch (item.getItemId()) {
+//                    case R.id.photo:
+//                        viewPager.setCurrentItem(0);
+//                        break;
+//
+//                    case R.id.album:
+//
+//                        viewPager.setCurrentItem(1);
+//                        break;
+//
+//                    case R.id.favorite:
+//
+//                        viewPager.setCurrentItem(2);
+//                        break;
+//
+//                    case R.id.scret:
+//                        viewPager.setCurrentItem(3);
+//                        break;
+//
+//                }
+//                return true;
+//            }
+//        });
     }
 
     private void setUpViewPager(){
@@ -114,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        Toast.makeText(this, "Stop main",Toast.LENGTH_LONG).show();
+
     }
 
     @Override
@@ -124,10 +133,45 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private void load(){
+        setUpViewPager();
+        loadSettings();
+        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+
+                switch (item.getItemId()) {
+                    case R.id.photo:
+                        viewPager.setCurrentItem(0);
+                        break;
+
+                    case R.id.album:
+
+                        viewPager.setCurrentItem(1);
+                        break;
+
+                    case R.id.favorite:
+
+                        viewPager.setCurrentItem(2);
+                        break;
+
+                    case R.id.scret:
+                        viewPager.setCurrentItem(3);
+                        break;
+
+                }
+                return true;
+            }
+        });
+    }
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         permission.checkResult(requestCode,permissions,grantResults);
+        if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED){
+            load();
+        }
+
     }
 
     private void loadSettings(){

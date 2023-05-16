@@ -26,7 +26,7 @@
     <string name="anti_clockspin_transformation">Anti Clockspin transformation</string>
     <string name="zoom_out_transformation">Zoom out transformation</string>
     <string name="depth_transformation">Depth transformation</string>
-    <string name="create_password">Crreate password</string>
+    <string name="create_password">Create password</string>
     <string name="enter_your_password">Enter your password</string>
     <string name="confirm_password">Confirm password</string>
     <string name="question_for_getting_back_password">"Queston "</string>

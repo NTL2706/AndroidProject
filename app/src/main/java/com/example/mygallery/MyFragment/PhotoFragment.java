@@ -94,7 +94,6 @@ public class PhotoFragment extends Fragment {
     public void onResume() {
         super.onResume();
         categoryAdapter.setData(getListCategory());
-
     }
 
     private void SetRecycleView(){
