@@ -39,4 +39,5 @@
     <string name="hide_photo">Hide picture</string>
     <string name="set_wallpaper">Set wallpaper</string>
     <string name="search_results">Search</string>
+    <string name="to_album">To Album</string>
 </resources>

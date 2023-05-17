@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/menuSearch_Advanced"
+        android:title="@string/search_advance"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/CancelSelect"
+        android:icon="@drawable/baseline_cancel_24"
+        android:title="Cancel Select"
+        app:showAsAction="ifRoom"
+        />
+    <item
+        android:id="@+id/duplicateImages"
+        android:title="@string/duplicate_images"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/toAlbum"
+        android:title="@string/to_album"
+        app:showAsAction="never"
+        />
+</menu>

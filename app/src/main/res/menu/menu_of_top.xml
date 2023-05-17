@@ -15,10 +15,6 @@
         app:showAsAction="ifRoom|collapseActionView" />
 
     <item
-        android:id="@+id/menuChoose"
-        android:title="@string/multi_select"
-        app:showAsAction="never" />
-    <item
         android:id="@+id/menuSearch_Advanced"
         android:title="@string/search_advance"
         app:showAsAction="never" />
@@ -26,8 +22,5 @@
         android:id="@+id/menuSettings"
         android:title="@string/settings"
         app:showAsAction="never" />
-    <item
-        android:id="@+id/duplicateImages"
-        android:title="@string/duplicate_images"
-        app:showAsAction="never" />
+
 </menu>

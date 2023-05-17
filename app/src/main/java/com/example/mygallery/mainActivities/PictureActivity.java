@@ -451,6 +451,7 @@ public class PictureActivity extends AppCompatActivity implements PictureInterfa
                 Toast.makeText(PictureActivity.this, "CANCELED", Toast.LENGTH_SHORT).show();
             }
         });
+
         addToAlbumDialog.create();
         addToAlbumDialog.show();
     }

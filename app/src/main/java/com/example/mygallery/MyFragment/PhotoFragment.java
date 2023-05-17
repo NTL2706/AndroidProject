@@ -5,17 +5,23 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
+import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -25,6 +31,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -36,16 +43,25 @@ import com.example.mygallery.MyAdapter.CategoryAdapter;
 import com.example.mygallery.R;
 import com.example.mygallery.mainActivities.ItemAlbumActivity;
 import com.example.mygallery.mainActivities.MainActivity;
+import com.example.mygallery.mainActivities.PictureActivity;
 import com.example.mygallery.models.Category;
 import com.example.mygallery.models.Image;
+import com.example.mygallery.utility.AlbumUtility;
 import com.example.mygallery.utility.Get_All_Image_From_Gallery;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.mlkit.vision.common.InputImage;
+import com.google.mlkit.vision.label.ImageLabel;
+import com.google.mlkit.vision.label.ImageLabeler;
+import com.google.mlkit.vision.label.ImageLabeling;
+import com.google.mlkit.vision.label.defaults.ImageLabelerOptions;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 
-public class PhotoFragment extends Fragment {
+public class PhotoFragment extends Fragment implements View.OnLongClickListener {
     ActivityResultLauncher<Intent> mLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
         @Override
         public void onActivityResult(ActivityResult result) {
@@ -76,7 +92,14 @@ public class PhotoFragment extends Fragment {
     private RecyclerView recyclerView;
     private Uri imageUri;
     private Bitmap thumbnail;
+    private List<Image>multiPick;
+
+
     private String imageurl;
+    public static boolean selected;
+    private PhotoFragment photoFragment;
+    private List<Image> listAdvancedSearch = new ArrayList<>();
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -85,6 +108,8 @@ public class PhotoFragment extends Fragment {
         context = photo_layout.getContext();
         recyclerView = photo_layout.findViewById(R.id.show_photo);
         toolbar_photo = photo_layout.findViewById(R.id.toolbar_photo);
+        multiPick = new ArrayList<>();
+        photoFragment = PhotoFragment.this;
         setting_event_toolbar();
         SetRecycleView();
         return photo_layout;
@@ -94,15 +119,17 @@ public class PhotoFragment extends Fragment {
     public void onResume() {
         super.onResume();
         categoryAdapter.setData(getListCategory());
+
     }
 
     private void SetRecycleView(){
-        categoryAdapter = new CategoryAdapter(context);
+        categoryAdapter = new CategoryAdapter(context,photoFragment, multiPick);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL,false);
         recyclerView.setLayoutManager(linearLayoutManager);
         categoryAdapter.setData(getListCategory());
         recyclerView.setAdapter(categoryAdapter);
     }
+    private int count  = 0;
     private void setting_event_toolbar (){
         toolbar_photo.inflateMenu(R.menu.menu_of_top);
         toolbar_photo.setTitle("Photo");
@@ -135,18 +162,125 @@ public class PhotoFragment extends Fragment {
                     case R.id.search_image:
                         SearchImage();
                         break;
-                    case R.id.menuChoose:
+                    case R.id.menuSearch_Advanced:
+                        AlertDialog.Builder alert = new AlertDialog.Builder(context);
+                        EditText editText = new EditText(context);
+                        alert.setTitle("Type your word");
+                        alert.setView(editText);
+
+                        try {
+                            alert.setPositiveButton("Find", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int j) {
+                                    List<Image> all_image = Get_All_Image_From_Gallery.getAllImageFromGallery(context);
+                                    RnAdvancedSearch rnAdvancedSearch = new RnAdvancedSearch(alert, editText);
+                                    rnAdvancedSearch.execute(all_image);
+                                    if (listAdvancedSearch.size() > 0){
+                                        for (int i = 0; i < listAdvancedSearch.size();i++){
+                                            listAdvancedSearch.remove(i);
+                                        }
+                                    }
+                                };
+
+
+
+
+
+                            });
+
+
+                            alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    Toast.makeText(context, "CANCELED", Toast.LENGTH_SHORT).show();
+
+                                }
+                            });
+
+
+                            alert.show();
+
+                        }catch (Exception e){
+                            e.printStackTrace();
+                        }
                         break;
-                    case R.id.duplicateImages:
-                        break;
+
                     case R.id.menuSettings:
                         break;
-                    case R.id.menuSearch_Advanced:
-                        break;
+
                 }
                 return true;
             }
         });
+    }
+
+    private class RnAdvancedSearch extends AsyncTask<List<Image>,Void, List<Image>>{
+        private AlertDialog.Builder alert;
+        private EditText text;
+        public RnAdvancedSearch(AlertDialog.Builder alert, EditText text){
+            this.alert = alert;
+            this.text = text;
+        }
+        @Override
+        protected List<Image> doInBackground(List<Image> ...all_image) {
+            final CountDownLatch countDownLatch = new CountDownLatch(all_image[0].size());
+            for (int i = 0; i < all_image[0].size(); i++) {
+                Bitmap bitmap = BitmapFactory.decodeFile(all_image[0].get(i).getPath());
+                ImageLabeler imageLabeler = ImageLabeling.getClient(ImageLabelerOptions.DEFAULT_OPTIONS);
+                InputImage inputImage = InputImage.fromBitmap(bitmap, 0);
+                Image image = all_image[0].get(i);
+                System.out.println(all_image[0].get(i).getPath());
+                imageLabeler.process(inputImage).addOnSuccessListener(new OnSuccessListener<List<ImageLabel>>() {
+                    @Override
+                    public void onSuccess(List<ImageLabel> imageLabels) {
+                        String imageRecognization = "";
+                        if (text.getText().length() > 0) {
+                            for (ImageLabel imageLabel : imageLabels) {
+
+                                String label = imageLabel.getText();
+                                Float Confidence = imageLabel.getConfidence();
+                                String str1 = label.toLowerCase();
+                                String str2 = text.getText().toString().toLowerCase();
+
+
+                                if (str1.equals(str2)) {
+                                    System.out.println(str2);
+                                    listAdvancedSearch.add(image);
+                                }
+
+                            }
+                        }
+                        countDownLatch.countDown();
+                    }
+                });
+
+            }
+            try {
+                countDownLatch.await(); // Wait for all image labeling processes to complete
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+          return  listAdvancedSearch;
+        }
+
+
+        @Override
+        protected void onPostExecute(List<Image> all_image) {
+
+
+
+                    ArrayList<String> listStringImage = new ArrayList<>();
+                    System.out.println(listAdvancedSearch.size());
+                    for (Image image : listAdvancedSearch) {
+                        listStringImage.add(image.getPath());
+                    }
+                    Intent intent = new Intent(context, ItemAlbumActivity.class);
+                    intent.putStringArrayListExtra("data", listStringImage);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    context.startActivity(intent);
+                }
+
+
     }
 
     private void SearchImage (){
@@ -214,5 +348,118 @@ public class PhotoFragment extends Fragment {
 
     public void takeImage (){
 
+    }
+
+    @Override
+    public boolean onLongClick(View view) {
+        toolbar_photo.getMenu().clear();
+        toolbar_photo.inflateMenu(R.menu.multi_selected_menu);
+        toolbar_photo.setTitle("Select image");
+
+        toolbar_photo.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()){
+                    case R.id.CancelSelect:
+                        selected = false;
+                        toolbar_photo.getMenu().clear();
+                        setting_event_toolbar();
+                        recyclerView.setAdapter(categoryAdapter);
+                        toolbar_photo.setTitle("Photo");
+                        break;
+                    case R.id.toAlbum:
+                        for (int i = 0; i < multiPick.size();i++){
+                            System.out.println(multiPick.get(i).getPath());
+                        }
+                        View addToAlbumView = LayoutInflater.from(context).inflate(R.layout.choose_album_form, null);
+                        ListView chooseAlbumListView = addToAlbumView.findViewById(R.id.chooseAlbumListView);
+
+                        ArrayList<String> albums = AlbumUtility.getInstance(context).getAllAlbums();
+                        ArrayAdapter<String> adapter = new ArrayAdapter<String>(context,
+                                android.R.layout.simple_list_item_multiple_choice, albums);
+                        chooseAlbumListView.setAdapter(adapter);
+
+                        AlertDialog.Builder addToAlbumDialog = new AlertDialog.Builder(context, R.style.AlertDialog);
+                        addToAlbumDialog.setView(addToAlbumView);
+                        ArrayList<String> chosen = new ArrayList<String>();
+                        addToAlbumDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int j) {
+                                //String picturePath = pictureFiles[mViewPager.getCurrentItem()].getAbsolutePath();
+                                for (int index = 0; index < chooseAlbumListView.getCount(); ++index) {
+                                    if (chooseAlbumListView.isItemChecked(index))
+                                        chosen.add(chooseAlbumListView.getItemAtPosition(index).toString());
+                                }
+                                for (String s : chosen) {
+                                    for (int i = 0; i < multiPick.size();i++){
+                                        AlbumUtility.getInstance(context).addPictureToAlbum(s, multiPick.get(i).getPath());
+                                    }
+                                }
+//                                Toast.makeText(PictureActivity.this, "Added to selected albums", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+
+                        addToAlbumDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                Toast.makeText(context, "CANCELED", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                        addToAlbumDialog.create();
+                        addToAlbumDialog.show();
+                        break;
+//                    case R.id.menuSearch_Advanced:
+//                        AlertDialog.Builder alert = new AlertDialog.Builder(context);
+//                        EditText text = new EditText(context);
+//                        alert.setTitle("Enter your word");
+//                        alert.setView(text);
+//                        if (text.getText().length()>0){
+//                            for (int i = 0; i < multiPick.size();i++){
+//                                Bitmap bitmap = BitmapFactory.decodeFile(multiPick.get(i).getPath());
+//                                ImageLabeler imageLabeler = ImageLabeling.getClient(ImageLabelerOptions.DEFAULT_OPTIONS);
+//                                InputImage inputImage = InputImage.fromBitmap(bitmap,0);
+//                                Image image = multiPick.get(i);
+//                                imageLabeler.process(inputImage).addOnSuccessListener(new OnSuccessListener<List<ImageLabel>>() {
+//                                    @Override
+//                                    public void onSuccess(List<ImageLabel> imageLabels) {
+//                                        String imageRecognization= "";
+//                                        for (ImageLabel imageLabel: imageLabels){
+//                                            String label = imageLabel.getText();
+//                                            Float Confidence = imageLabel.getConfidence();
+//
+//                                            if (label.toLowerCase().equals(text.getText().toString().toLowerCase())){
+//                                                listAdvancedSearch.add(image);
+//                                            }
+//                                        }
+//                                    }
+//                                });
+//                            }
+//                            alert.setPositiveButton("Find", new DialogInterface.OnClickListener() {
+//                                @Override
+//                                public void onClick(DialogInterface dialogInterface, int i) {
+//                                    ArrayList<String> listStringImage = new ArrayList<>();
+//                                    for (Image image : listAdvancedSearch) {
+//                                        listStringImage.add(image.getPath());
+//                                    }
+//                                    Intent intent = new Intent(context, ItemAlbumActivity.class);
+//                                    intent.putStringArrayListExtra("data", listStringImage);
+//                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                                    context.startActivity(intent);
+//                                }
+//                            });
+//                        }
+//
+//                        break;
+
+
+                }
+                return false;
+            }
+
+        });
+        this.selected = true;
+        recyclerView.setAdapter(categoryAdapter);
+        recyclerView.scrollToPosition(View.generateViewId());
+        return false;
     }
 }

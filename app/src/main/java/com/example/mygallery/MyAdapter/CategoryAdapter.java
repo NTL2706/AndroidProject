@@ -10,17 +10,22 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.mygallery.MyFragment.PhotoFragment;
 import com.example.mygallery.R;
 import com.example.mygallery.models.Category;
+import com.example.mygallery.models.Image;
 
 import java.util.List;
 
 public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder> {
     private Context context;
     private List<Category> listCategory;
-
-    public CategoryAdapter(Context context) {
+    private PhotoFragment photoFragment;
+    private List<Image>multiPick;
+    public CategoryAdapter(Context context, PhotoFragment photoFragment,List<Image>multiPick) {
         this.context = context;
+        this.photoFragment = photoFragment;
+        this.multiPick = multiPick;
     }
 
     public void setData(List<Category> listCategory) {
@@ -47,7 +52,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
 
 
         ImageAdapter imageAdapter = new ImageAdapter(context.getApplicationContext());
-        imageAdapter.setData(category.getListGirl());
+        imageAdapter.setData(category.getListGirl(), photoFragment,multiPick);
         imageAdapter.setListCategory(listCategory);
         holder.RecycleViewPictures.setAdapter(imageAdapter );
 
