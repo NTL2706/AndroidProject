@@ -113,101 +113,98 @@ public class SecretFragment extends Fragment {
     }
 
     private void toolBarEvents() {
-//        toolbar_album.inflateMenu(R.menu.menu_album_secret);
-//        toolbar_album.setTitle(getContext().getResources().getString(R.string.secret));
-//        toolbar_album.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-//            @Override
-//            public boolean onMenuItemClick(MenuItem item) {
-//                int id = item.getItemId();
-//                switch (id){
-//                    case R.id.menuChangePass:
-//                        getChangePassFrag();
-//
-//                        break;
-//                    case R.id.menuForgotPass:
-//                        BottomSheetDialogFragment forgotDialog = new ForgotPassDialog();
-//                        forgotDialog.show(getChildFragmentManager(),forgotDialog.getTag());
-//                        break;
-//                    case R.id.menuDeleteSecret:
-//                        if(!password.equals("")){
-//                            deleteSecret();
-//                        }
-//                        else{
-//                            Toast.makeText(getActivity(),"Doesn't have secret", Toast.LENGTH_SHORT).show();
-//                        }
-//                        break;
-//                }
-//                return true;
-//            }
-//        });
+        toolbar_album.inflateMenu(R.menu.menu_album_secret);
+        toolbar_album.setTitle(getContext().getResources().getString(R.string.secret));
+        toolbar_album.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                int id = item.getItemId();
+                switch (id){
+                    case R.id.menuChangePass:
+                        getChangePassFrag();
+
+                        break;
+
+                    case R.id.menuDeleteSecret:
+                        if(!password.equals("")){
+                            deleteSecret();
+                        }
+                        else{
+                            Toast.makeText(getActivity(),"Doesn't have secret", Toast.LENGTH_SHORT).show();
+                        }
+                        break;
+                }
+                return true;
+            }
+        });
     }
 
     public void deleteSecret() {
-//        AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
-//        LinearLayout linearLayout = new LinearLayout(getContext());
-//        linearLayout.setOrientation(LinearLayout.VERTICAL);
-//        final  EditText pass_box = new EditText(getContext());
-//        pass_box.setHint(getView().getResources().getString(R.string.enter_your_password));
-//        pass_box.setTransformationMethod(new PasswordTransformationMethod());
-//        final TextView question = new TextView(getContext());
-//        question.setText("Answer this question: "+settings.getString("question",""));
-//        final  EditText del_answer = new EditText(getContext());
-//        del_answer.setTransformationMethod(new PasswordTransformationMethod());
-//        linearLayout.addView(pass_box);
-//        linearLayout.addView(question);
-//        linearLayout.addView(del_answer);
-//        alert.setTitle("Confirm your action");
-//        alert.setView(linearLayout);
-//
-//        alert.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
-//            public void onClick(DialogInterface dialog, int whichButton) {
-//                String del_pass_value = pass_box.getText().toString();
-//                String del_answer_value = del_answer.getText().toString();
-//                if(!BCrypt.checkpw(del_pass_value, password)){
-//                    Toast.makeText(getActivity(),"Wrong password", Toast.LENGTH_SHORT).show();
-//                    return;
-//                }
-//                if(!BCrypt.checkpw(del_answer_value, settings.getString("answer",""))){
-//                    Toast.makeText(getActivity(),"Wrong answer", Toast.LENGTH_SHORT).show();
-//                    return;
-//                }
-//                File scrDir = new File(secretPath);
-//                if(scrDir.exists()){
-//                    FileUtility fu = new FileUtility();
-//                    fu.deleteRecursive(scrDir);
-//                    SharedPreferences.Editor editor = settings.edit();
-//                    editor.putString("password","");
-//                    editor.apply();
-//                    enterPassView.setVisibility(View.INVISIBLE);
-//                    createPassView.setVisibility(View.VISIBLE);
-//                    Toast.makeText(getActivity(),"Delete secret success", Toast.LENGTH_SHORT).show();
-//                }
-//                else{
-//                    Toast.makeText(getActivity(),"Doesn't have secret", Toast.LENGTH_SHORT).show();
-//                }
-//            }
-//        });
-//
-//        alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-//            public void onClick(DialogInterface dialog, int whichButton) {
-//                dialog.cancel();
-//            }
-//        });
-//
-//        alert.show();
+        AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
+        LinearLayout linearLayout = new LinearLayout(getContext());
+        linearLayout.setOrientation(LinearLayout.VERTICAL);
+        final  EditText pass_box = new EditText(getContext());
+        pass_box.setHint(getView().getResources().getString(R.string.enter_your_password));
+        pass_box.setTransformationMethod(new PasswordTransformationMethod());
+        final TextView question = new TextView(getContext());
+        question.setText("Answer this question: "+settings.getString("question",""));
+        final  EditText del_answer = new EditText(getContext());
+        del_answer.setTransformationMethod(new PasswordTransformationMethod());
+        linearLayout.addView(pass_box);
+        linearLayout.addView(question);
+        linearLayout.addView(del_answer);
+        alert.setTitle("Confirm your action");
+        alert.setView(linearLayout);
+
+        alert.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                String del_pass_value = pass_box.getText().toString();
+                String del_answer_value = del_answer.getText().toString();
+                if(!BCrypt.checkpw(del_pass_value, password)){
+                    Toast.makeText(getActivity(),"Wrong password", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if(!BCrypt.checkpw(del_answer_value, settings.getString("answer",""))){
+                    Toast.makeText(getActivity(),"Wrong answer", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                File scrDir = new File(secretPath);
+                if(scrDir.exists()){
+                    FileUtility fu = new FileUtility();
+                    fu.deleteRecursive(scrDir);
+                    SharedPreferences.Editor editor = settings.edit();
+                    editor.putString("password","");
+                    editor.apply();
+                    enterPassView.setVisibility(View.INVISIBLE);
+                    createPassView.setVisibility(View.VISIBLE);
+                    Toast.makeText(getActivity(),"Delete secret success", Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    Toast.makeText(getActivity(),"Doesn't have secret", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                dialog.cancel();
+            }
+        });
+
+        alert.show();
 
 
     }
 
     public void getChangePassFrag() {
-//        updatePassword();
-//        if(!password.equals("")){
-//            BottomSheetDialogFragment changePassFrag = new ChangePassFragment();
-//            changePassFrag.show(getChildFragmentManager(),changePassFrag.getTag());
-//        }
-//        else{
-//            Toast.makeText(getActivity(),"Don't have password", Toast.LENGTH_SHORT).show();
-//        }
+        updatePassword();
+        if(!password.equals("")){
+            BottomSheetDialogFragment changePassFrag = new ChangePassFragment();
+            changePassFrag.show(getChildFragmentManager(),changePassFrag.getTag());
+        }
+        else{
+            Toast.makeText(getActivity(),"Don't have password", Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void eventCreatePass() {
